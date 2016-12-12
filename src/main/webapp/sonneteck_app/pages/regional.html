@@ -1,0 +1,47 @@
+
+<ion-view view-title="Regional View">
+    <ion-content class="padding">
+        <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+        <!--<div class="list list-inset">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="text" placeholder="Search">
+            </label>
+        </div>-->
+        
+        <ion-list class="ragional-view">
+            <!--<ion-item class="item item-thumbnail-left " ng-repeat="regional in regionals" type="item-text-wrap" href="#/config/regional?regionalId={{regional.id}}">-->
+            <ion-item class="item" ng-repeat="regional in regionals" type="item-text-wrap"ng-click="toRegional(regional)">
+                <!--<img src="./images/live-stream.jpg">-->
+                <h2>Region: {{regional.region_name}}</h2>
+                <!--<h2>{{regional.region_name}}</h2>-->
+                <div class="row">
+                    <p ng-if="!regional.realTimeData.substrate_PH" class="col col-50">PH: no data!</p>
+                    <p ng-if="regional.realTimeData.substrate_PH" class="col col-50">PH: {{regional.realTimeData.substrate_PH}}</p>
+
+                    <p ng-if="!regional.realTimeData.substrate_Conductivity" class="col col-50">EC: no data!</p>
+                    <p ng-if="regional.realTimeData.substrate_Conductivity" class="col col-50">EC: {{regional.realTimeData.substrate_Conductivity}}</p>
+                </div>
+                <div class="row">
+                    <p ng-if="!regional.realTimeData.air_Humidity" class="col col-50">RH: no data!</p>
+                    <p ng-if="regional.realTimeData.air_Humidity" class="col col-50">RH: {{regional.realTimeData.air_Humidity}}</p>
+
+                    <p ng-if="!regional.realTimeData.air_Temperature" class="col col-50">TEMP: no data!</p>
+                    <p ng-if="regional.realTimeData.air_Temperature" class="col col-50">TEMP: {{regional.realTimeData.air_Temperature}}</p>
+                </div>
+                <div class="row">
+                    <p ng-if="!regional.realTimeData.carbon_Dioxide" class="col col-50">CO2: no data!</p>
+                    <p ng-if="regional.realTimeData.carbon_Dioxide" class="col col-50">CO2: {{regional.realTimeData.carbon_Dioxide}}</p>
+
+                    <p ng-if="!regional.realTimeData.ppfd" class="col col-50">PPFD: no data!</p>
+                    <p ng-if="regional.realTimeData.ppfd" class="col col-50">PPFD: {{regional.realTimeData.ppfd}}</p>
+                </div>
+            </ion-item>
+
+            <ion-item class="item item-thumbnail-left " ng-if="!regionals || regionals.length == 0" type="item-text-wrap">
+                <img src="./images/noData.png">
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
+

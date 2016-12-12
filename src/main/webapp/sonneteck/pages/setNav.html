@@ -1,0 +1,18 @@
+<div class="set-nav">
+    <div class="container">
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div class="">
+                    <ul class="nav navbar-nav navCont">
+
+                        <li ng-class="nav.className" ng-repeat="nav in navs">
+                            <a ng-click="changeClass(this)" ui-sref="{{nav.url}}">{{nav.title}}</a>
+                        </li>
+                        <!--<li class="pull-right"><button class="btn btn-success" ng-click="newRegion()">New Region</button></li>-->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+</div>  
+</div>
+

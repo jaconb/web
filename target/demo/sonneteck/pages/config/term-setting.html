@@ -1,0 +1,407 @@
+<!--<div class="panel panel-default"  style="margin:5px;border-radius: 2px;">-->
+    <!--<div class="panel-heading" style="background-color:#fff">-->
+          <!--<div class="row">-->
+              <!--&lt;!&ndash;<label for="exampleInputEmail1"  class="col-md-2  control-label">Term Select</label>&ndash;&gt;-->
+              <!--<div class="col-md-5">-->
+                <!--<select class="form-control" ng-model="term" ng-options="term.cdts_name for term in termList" ng-change="selectGateway(gateway)">-->
+                  <!--<option ng-if="!termList || termList.length == 0" value="">-No data now-</option>-->
+                <!--</select>-->
+              <!--</div>-->
+              <!--<div class="col-md-2">-->
+                <!--&lt;!&ndash;<button ng-click="removeTerm()" class="btn btn-danger"><i class="glyphicon glyphicon-remove-circle"></i> Remove Term</button>  &ndash;&gt;-->
+              <!--</div>-->
+              <!--<div class="col-md-5">-->
+                <!--<button class="btn btn-success pull-right" ng-click="newTerm()"><i class="glyphicon glyphicon-plus"></i>New Term</button>-->
+              <!--</div>-->
+          <!--</div>-->
+    <!--</div>-->
+    <!--<style>-->
+    <!--</style>-->
+    <!--<div class="panel-body">-->
+        <!--<div class="row">-->
+          <!--<div class="col-md-6">-->
+                <!--<div class="panel-heading" style="border:1px solid #ddd">-->
+                    <!--<strong><i class="icon-th-large"></i> Rules</strong>-->
+                    <!--<div class="pull-right">-->
+                        <!--<button ng-click="newRule()" class="btn btn-success" style="margin-top: -6px; margin-right: -12px;"><i class="glyphicon glyphicon-plus"></i>Add Rule</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+                  <!--&lt;!&ndash;<label>Rules</label>&ndash;&gt;-->
+                  <!--<table class="table table-striped">-->
+                      <!--<tr>-->
+                          <!--<th>rule_name</th>-->
+                          <!--<th>operation</th>-->
+                      <!--</tr>-->
+                      <!--<tr ng-repeat="(index, regionTerm) in RegionTermInfo">-->
+                          <!--<td>{{regionTerm.rule_name}}</td>-->
+                          <!--<td><a ng-click="open('lg')">Detail</a></td>-->
+                      <!--</tr>-->
+                      <!--<tr>-->
+                          <!--<td colspan="2" ng-if="!RegionTermInfo || RegionTermInfo.length==0">No data now</td>-->
+                      <!--</tr>-->
+                  <!--</table>-->
+
+                  <!--<div>-->
+                      <!--<uib-pagination total-items="1" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>-->
+                  <!--</div>-->
+            <!--</div>-->
+          <!--<div class="col-md-6">-->
+            <!--<div class="panel-heading" style="border:1px solid #ddd">-->
+                <!--<strong><i class="icon-th-large"></i> Sequence</strong>-->
+                <!--<div class="pull-right">-->
+                    <!--<button ng-click="newSequence('lg')" class="btn btn-success" style="margin-top: -6px; margin-right: -12px;"><i class="glyphicon glyphicon-plus"></i>Add Sequence</button>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<table class="table table-striped">-->
+                <!--<tr>-->
+                    <!--<th>sequence_name</th>-->
+                    <!--<th>operation</th>-->
+                <!--</tr>-->
+                <!--<tr ng-repeat="(index, regionTerm) in RegionTermInfo">-->
+                    <!--<td>{{regionTerm.sequence_name}}</td>-->
+                    <!--<td><a ng-click="open('lg')">Detail</a></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td colspan="2" ng-if="!RegionTermInfo || RegionTermInfo.length==0">No data now</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+
+            <!--<div>-->
+                <!--<uib-pagination total-items="1" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+
+
+<!--新建条件控制弹窗-->
+<script type="text/ng-template" id="newTerm.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New Term</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="exampleInputEmail">Term Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail" placeholder="Term Name" ng-model="termName">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail">Gateway Setting</label>
+            <select class="form-control" ng-model="gateway" ng-options="gateway.gateway_id for gateway in gatewayList" ng-change="selectGateway(gateway)">
+                <option ng-if="gatewayList == 'no Data'">-No Data now-</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--新建条件弹窗-->
+<script type="text/ng-template" id="newRule.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New Rule</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Device List</label>
+            <select class="form-control" ng-model="device" ng-options="device.device_name for device in deviceList" ng-change="selectDevice(device)">
+                <option value=""><--Select--></option>
+            </select>
+             <!--<select class="form-control" ng-if="device == 'no Data'">-->
+                <!--<option>-No Data now-</option>-->
+            <!--</select>&ndash;&gt;-->
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Channel List</label>
+            <select class="form-control" ng-model="channel" ng-options="channel.channel_name for channel in channelList" ng-change="selectChannel(channel)">
+                <option value=""><--Select--></option>
+            </select>
+            <!--<select class="form-control"  ng-if="!channelList || channelList.length == 0"><option>-No Data now-</option></select>-->
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Channel Value</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Channel Value" ng-model="newRuleValue">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="newRuleOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="newRuleCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--序列详情弹窗-->
+<script type="text/ng-template" id="sequenceDetail.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Number {{num}} Detail</h3>
+    </div>
+    <div class="modal-body">
+        <div>
+            <strong>
+                Action List
+            </strong>
+            <table class="table table-striped">
+                <tr>
+                    <th>Target</th>
+                    <th>Channel</th>
+                    <th>Value</th>
+                </tr>
+                <tr ng-repeat="sqnDetail in sqnDetailInfo">
+                    <td>{{sqnDetail.dcgs_guid}}</td>
+                    <td>{{sqnDetail.channel_bit_num}}</td>
+                    <td>{{sqnDetail.m_value}}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" ng-if="!sqnDetailInfo || sqnDetailInfo.length==0">No data now</td>
+                </tr>
+            </table>
+            <!--<uib-pagination total-items="1" ng-model="GroupDeviceCurrentPage" max-size="RegionDeviceMaxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>-->
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="sqnDetailOk()">OK</button>
+        <!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+    </div>
+</script>
+
+<!--新建序列弹窗-->
+<script type="text/ng-template" id="newSequence.html">
+    <div class="modal-header" style="width: auto">
+        <h3 class="modal-title">New Sequence</h3>
+    </div>
+    <div class="modal-body" style="width: auto">
+        <div class="row" style="float: right" ng-show="setSqn">
+            Sequence: <input type="text" class="form-control" style="width: 50px;display: inline" placeholder="Sequence Number" ng-model="sequence" readonly>
+            Control_time: <input type="text" class="form-control" style="width: 100px;display: inline" placeholder="Time(ms)" ng-model="time">
+            <button class="btn btn-primary btn-sm" type="button" ng-click="addSequence()">Apply</button>
+        </div>
+        <div class="row" style="float: right" ng-show="setSqnOver">
+            Sequence: <input type="text" class="form-control" style="width: 50px;display: inline" placeholder="{{control_number}}" readonly>
+            Control_time: <input type="text" class="form-control" style="width: 100px;display: inline" placeholder="{{control_time}}ms" readonly>
+            <!--<button class="btn btn-primary btn-sm" type="button" ng-click="addSequence()">Apply</button>-->
+        </div>
+        <div class="row" style="margin-top: 40px">
+            <div class="col-md-4" ng-show="setAction">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Type List</label>
+                    <select class="form-control" style="width: 170px" ng-model="my.type" ng-options="type.name for type in typeList" ng-change="typeChange()">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">{{my.type.name}}</label>
+                    <select class="form-control" style="width: 170px" ng-if="my.type.key == 'region'" ng-model="my.obj" ng-options="object.name for object in my.objList"></select>
+                    <select class="form-control" style="width: 170px" ng-if="my.type.key == 'device'" ng-model="my.obj" ng-options="object.device_name for object in my.objList"></select>
+                    <select class="form-control" style="width: 170px" ng-if="my.type.key == 'group'" ng-model="my.obj" ng-options="object.group_name for object in my.objList"></select>
+                    <!--<select class="form-control" style="width: 170px" ng-if="my.type.key == 'scene'" ng-model="my.obj" ng-options="object.scene_name for object in my.objList"></select>-->
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Target</label>
+                    <select class="form-control" style="width: 170px" ng-model="my.target" ng-options="target.name for target in my.type.targetList"></select>
+                </div>
+                <div class="form-group" ng-if="my.target.key == 'channel'">
+                    <label for="exampleInputEmail1">Channel List</label>
+                    <select class="form-control" style="width: 170px" ng-model="my.channel" ng-options="channel.channel_number for channel in my.channelList"></select>
+                </div>
+                <div class="form-group" ng-if="my.target.key == 'channel'">
+                    <input type="text" style="width: 170px" class="form-control" placeholder="Channel Value" ng-model="my.channelValue">
+                </div>
+                <!--<div ng-if="my.target.key == 'switch'">-->
+                    <!--<label for="exampleInputEmail">SwitchStatus</label>-->
+                    <!--<select class="form-control" style="width: 170px" ng-model="my.switchValue">-->
+                        <!--<option value="01">On</option>-->
+                        <!--<option value="00">Off</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<label for="exampleInputEmail1">Channel Value</label>-->
+                    <!--<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Term Name" ng-model="newTermName">-->
+                <!--</div>-->
+
+                <button class="btn btn-success" type="button" ng-click="addAction()">add Action</button>
+            </div>
+
+            <div class="col-md-5" ng-if="my.sequenceList && my.sequenceList.length > 0"  ng-show="setAction">
+                <strong>
+                    Action List
+                </strong>
+
+                <!--<div class="item" ng-repeat="(index,sequence) in my.sequenceList">-->
+                    <!--&lt;!&ndash; type: 对应type &ndash;&gt;-->
+                    <!--<h>{{index + 1}}</h>-->
+                    <!--<h>Type:{{sequence.type_name}}:</h>-->
+                    <!--&lt;!&ndash; 对象：对象id &ndash;&gt;-->
+                    <!--<p ng-if="sequence.region_name" style="display: inline">Name： {{sequence.region_name}}</p>-->
+                    <!--<p ng-if="sequence.device_name">Name： {{sequence.device_name}}</p>-->
+                    <!--<p ng-if="sequence.group_name">Name： {{sequence.group_name}}</p>-->
+                    <!--<p ng-if="sequence.scene_name">Name： {{sequence.scene_name}}</p>-->
+                    <!--&lt;!&ndash; 动作：1、显示通道number，2、开关显示switch &ndash;&gt;-->
+                    <!--<p ng-if="sequence.target == 'channel'">channel：{{sequence.channel_number}}</p>-->
+                    <!--<p ng-if="sequence.target == 'channel'">value：{{sequence.channel_value}}</p>-->
+                    <!--<p ng-if="sequence.target == 'switch'">switch：{{sequence.switchValue}}</p>-->
+                <!--</div>-->
+                <table class="table table-striped">
+                      <tr>
+                          <th>Type</th>
+                          <th>Name</th>
+                          <th>Target</th>
+                          <th>Value</th>
+                          <th>Operation</th>
+                      </tr>
+                      <tr ng-repeat="sequence in my.sequenceList">
+                          <td>{{sequence.type_name}}</td>
+
+                          <td ng-if="sequence.region_name">{{sequence.region_name}}</td>
+                          <td ng-if="sequence.device_name">{{sequence.device_name}}</td>
+                          <td ng-if="sequence.group_name">{{sequence.group_name}}</td>
+                          <td ng-if="sequence.scene_name">{{sequence.scene_name}}</td>
+
+                          <td ng-if="sequence.target == 'channel'">Channel</td>
+                          <td ng-if="sequence.target == 'switch'">Switch</td>
+
+                          <!--<td ng-if="sequence.target == 'channel'">{{sequence.channel_number}}</td>-->
+                          <td ng-if="sequence.target == 'channel'">{{sequence.channel_value}}</td>
+
+                          <td ng-if="sequence.target == 'switch'">{{sequence.switchValue}}</td>
+
+                          <td class="td-operation"><span style="margin-left: 25px" class="glyphicon glyphicon-remove" ng-click="removeAction(sequence)"></span></td>
+                      </tr>
+                      <tr>
+                          <td colspan="4" ng-if="!sequence || sequence.length==0">No data now</td>
+                      </tr>
+                  </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" style="width: auto">
+        <button class="btn btn-primary" type="button" ng-click="newSequenceOk()" ng-show="setOk">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="newSequenceCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--主页-->
+<div class="panel panel-default"  style="margin:5px;border-radius: 2px;" ng-show="newTermShow">
+    <div class="panel-heading" style="background-color:#fff">
+        <div>
+            <strong>
+                Term List
+            </strong>
+            <div class="pannel-actions" style="float: right; margin-top: -6px;">
+                <button class="btn btn-success" ng-click="newTerm()"><i class="glyphicon glyphicon-plus"></i>New Term</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" cg-busy="{promise:findTermProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <table class="table table-striped">
+            <tr>
+                <th>Term Name</th>
+                <th>Gateway_id</th>
+                <th>Operation</th>
+            </tr>
+            <tr ng-repeat="(index, regionTerm) in termList">
+                <td>{{regionTerm.cdts_name}}</td>
+                <td>{{regionTerm.gateway_id}}</td>
+                <td class="td-operation">
+                    <a ng-click="toRules(regionTerm)">Rule</a>
+                    <a ng-click="toSequence(regionTerm)">Sequence</a>
+                    <!--<a ng-click="deleteRegionTerm(regionTerm)">Remove</a>-->
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" ng-if="!termList || termList.length==0">No data now</td>
+            </tr>
+        </table>
+
+        <div>
+            <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>
+        </div>
+
+    </div>
+</div>
+
+<!--条件主页-->
+<div class="panel panel-default"  style="margin:5px;border-radius: 2px;" ng-show="newRuleShow">
+    <div class="panel-heading" style="background-color:#fff">
+        <div>
+            <a class="btn btn-info btn-sm" ng-click="backToTerm()">
+                <span class="glyphicon glyphicon-chevron-left"></span> Back
+            </a>
+            <strong>
+                Current Term : {{newRuleTermName}}
+            </strong>
+            <div class="pannel-actions" style="float: right; margin-top: -6px;">
+                <button class="btn btn-success" ng-click="newRules(termInfo)"><i class="glyphicon glyphicon-plus"></i>New Rule</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <tr>
+                <th>Device</th>
+                <th>Channel</th>
+                <!--<th>Channel Type</th>-->
+                <th>Channel Value</th>
+                <!--<th>operation</th>-->
+            </tr>
+            <tr ng-repeat="(index, rules) in ruleList">
+                <td>{{rules.table_device_guid}}</td>
+                <td>{{rules.channel_bit_num}}</td>
+                <!--<td>{{rules.channel_type}}</td>-->
+                <td>{{rules.compare_val}}</td>
+                <!--<td class="td-operation">-->
+                    <!--<a ng-click="deleteRegionTerm(regionTerm)">Remove</a>-->
+                <!--</td>-->
+            </tr>
+            <tr>
+                <td colspan="3" ng-if="!ruleList || ruleList.length==0">No data now</td>
+            </tr>
+        </table>
+
+        <div>
+            <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>
+        </div>
+
+    </div>
+</div>
+
+<!--序列主页-->
+<div class="panel panel-default"  style="margin:5px;border-radius: 2px;" ng-show="newSequenceShow">
+    <div class="panel-heading" style="background-color:#fff">
+        <div>
+            <a class="btn btn-info btn-sm" ng-click="backToTerm()">
+                <span class="glyphicon glyphicon-chevron-left"></span> Back
+            </a>
+            <strong>
+                Current Term : {{newSqnTermName}}
+            </strong>
+            <div class="pannel-actions" style="float: right; margin-top: -6px;">
+                <button class="btn btn-success" ng-click="newSequence(seqTermInfo)"><i class="glyphicon glyphicon-plus"></i>New Sequence</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <tr>
+                <th>Control Number</th>
+                <th>Control Time</th>
+                <th>Operation</th>
+            </tr>
+            <tr ng-repeat="(index, sequence) in sequenceList">
+            <td>{{sequence.control_number}}</td>
+            <td>{{sequence.control_time}}</td>
+            <td class="td-operation">
+            <a ng-click="openSqnDetail(sequence)">Detail</a>
+            </td>
+            </tr>
+            <tr>
+                <td colspan="3" ng-if="!sequenceList || sequenceList.length==0">No data now</td>
+            </tr>
+        </table>
+
+        <div>
+            <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>
+        </div>
+
+    </div>
+</div>

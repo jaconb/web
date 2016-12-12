@@ -1,0 +1,16 @@
+.andNewDevice .panel {
+    height: 480px;
+    padding-top: 160px;
+}
+.andNewDevice-block {
+    width: 515px;
+    margin: 0 auto;
+}
+.andNewDevice-block .btn{
+    width: 74px;
+    height: 28px;
+    margin-left:40px;
+}
+.light-block {
+    margin-bottom: 83px;
+}

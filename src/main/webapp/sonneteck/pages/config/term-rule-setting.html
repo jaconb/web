@@ -1,0 +1,39 @@
+<!--主页-->
+<div class="panel panel-default"  style="margin:5px;border-radius: 2px;">
+    <div class="panel-heading" style="background-color:#fff">
+        <div>
+            <strong>
+                Term List
+            </strong>
+            <div class="pannel-actions" style="float: right; margin-top: -6px;">
+                <button class="btn btn-success" ng-click="newTerm()"><i class="glyphicon glyphicon-plus"></i>New Term</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body" cg-busy="{promise:findTermProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <table class="table table-striped">
+            <tr>
+                <th>Term Name</th>
+                <th>Gateway</th>
+                <th>Operation</th>
+            </tr>
+            <tr ng-repeat="(index, regionTerm) in termList">
+                <td>{{regionTerm.cdts_name}}</td>
+                <td>{{regionTerm.gateway_id}}</td>
+                <td class="td-operation">
+                    <a ng-click="newRules(regionTerm)">NewRule</a>
+                    <a ng-click="newSequence('lg',regionTerm)">NewSequence</a>
+                    <a ng-click="deleteRegionTerm(regionTerm)">Remove</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" ng-if="!termList || termList.length==0">No data now</td>
+            </tr>
+        </table>
+
+        <div>
+            <uib-pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true" rotate="false"></uib-pagination>
+        </div>
+
+    </div>
+</div>

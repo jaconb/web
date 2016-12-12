@@ -1,0 +1,112 @@
+<!--区域详情配方信息-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default"  style="border-radius: 4px;">
+            <div class="panel-heading" style="background-color:#fff">
+                <div>
+                    <strong>
+                        Regional Recipe Information
+                    </strong>
+                </div>
+            </div>
+            <div class="panel-body"  cg-busy="{promise:getSensorDataProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+                <table class="table">
+                    <tr>
+                        <th>Recipe name</th>
+                        <th>Period</th>
+                        <th>Start Time</th>
+                        <th>Status</th>
+                        <th>Operation</th>
+                    </tr>
+                    <tr ng-repeat="regionRecipes in RegionRecipeList">
+                        <td style="vertical-align: middle">{{regionRecipes.name}}</td>
+                        <td style="vertical-align: middle">{{regionRecipes.period}} Days</td>
+                        <td style="vertical-align: middle" ng-if="regionRecipes.status == '0'">No Implemented</td>
+                        <td style="vertical-align: middle" ng-if="regionRecipes.status != '0'">{{regionRecipes.start_time}}</td>
+                        <td style="vertical-align: middle" ng-if="regionRecipes.status == '0'">No Implemented</td>
+                        <td style="vertical-align: middle" ng-if="regionRecipes.status == '1'">Normal</td>
+                        <td style="vertical-align: middle" ng-if="regionRecipes.status == '2'">Abnormal</td>
+                        <td style="vertical-align: middle" class="td-operation">
+                            <button type="button" class="btn btn-success btn-xs"  ng-if="regionRecipes.status != '0'" ng-click="showRecipeDetail(regionRecipes)">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" ng-if="!RegionRecipeList || RegionRecipeList.length == 0" style="text-align: center">No data now</td>
+                    </tr>
+                </table>
+                <div ng-show="recipeDetail">
+                    <div class="col-md-12">
+                        <button type="button" style="float: right" class="btn btn-warning btn-xs" ng-click="closeRecipeDetail()">
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                        </button>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="padding-left: 0px">
+                            <div>
+                                <div class="pull-left">
+                                    <select style="float: left;width: 100px" class="form-control" ng-model="my.name" ng-options="findStandard.name for findStandard in findStandard">
+                                    </select>
+                                    <button style="margin-left: 10px" class="btn btn-sm btn-success" ng-click="findRecipeData()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-12" style="text-align: center">
+                                <a style="cursor: pointer;text-decoration: none;" ng-click="last()">
+                                    <span class="glyphicon glyphicon-chevron-left"></span> Last {{my.standard}}
+                                </a>
+                                <a style="cursor: pointer;text-decoration: none;margin-left: 35px" ng-click="next()">
+                                    Next {{my.standard}} <span class="glyphicon glyphicon-chevron-right"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container1" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container2" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container3" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container4" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container5" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container6" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container7" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container8" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container9" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container10" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container11" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container12" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container13" style="height:250px;width: 400px"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="container14" style="height:250px;width: 400px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+.set-nav .nav a {
+    padding: 9px;   
+    font-size: 13px;
+    color: #000;
+    margin-right: 15px;
+}
+.set-nav .nav button {
+    margin-bottom: 3px;
+    margin-left: 35px;
+    width: 115px;
+}
+.set-nav .nav .active a{
+    border-bottom: 3px solid #5fdf65;
+    color: #5fdf65;
+    position: relative;
+    bottom: -1px;
+}
+.set-nav .nav > li > a:hover,
+.set-nav .nav > li > a:focus {
+  text-decoration: none;
+  background-color: transparent;
+}
+.set-nav .navCont{
+    width: 100%;
+    margin-top: 30px;
+    border-bottom: 1px solid #bebebe;
+}

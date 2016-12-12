@@ -1,0 +1,689 @@
+<div ui-view="setNav"></div>
+<div ui-view="confMain">
+    <div class="container" cg-busy="{promise:RegionDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <div class="col-md-3">
+                <div class="panel panel-success" style="margin-top: 2px">
+                    <div class="panel-heading">
+                        <strong>
+                            Region List
+                        </strong>
+                        <div class="pull-right" style="margin-top: -6px">
+                            <button class="btn btn-success btn-sm" ng-click="newRegion()">New Region</button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div data-spy="scroll" data-offset="0" style="max-height: 350px;overflow: auto;position: relative">
+                            <table class="table">
+                                <th>Region Name</th><th>Operation</th>
+                                <tr ng-repeat="region in RegionData">
+                                    <td>{{region.region_name}}</td>
+                                    <td>
+                                        <a ng-click="setRegion(region)" title="set"><span class="glyphicon glyphicon-cog"></span></a>
+                                        <a ng-click="renameRegion(region)" title="rename"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <a ng-click="removeRegion(region)" title="move"><span class="glyphicon glyphicon-trash"></span></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" ng-if="!RegionData || RegionData.length==0" style="text-align: center">No data now</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--右侧高级配置-->
+            <div class="col-md-9">
+                <div id="accordion">
+                    <h3>Regional Device</h3>
+                    <div>
+                        <!--区域设备-->
+                        <div class="panel panel-default"  style="margin: 5px;border-radius: 4px;">
+                            <div class="panel-heading" style="background-color:#fff">
+                                <div style="vertical-align: middle">
+                                    <strong>
+                                        {{RegionName}} Device List
+                                    </strong>
+                                    <div class="pannel-actions" style="float: right;margin-top: -4px" ng-if="currentRegion != ''">
+                                        <button class="btn btn-success btn-xs" ng-click="addDevice('lg')"><span class="glyphicon glyphicon-plus"></span> Add Device</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" style="background-color:#fff">
+                                <table class="table">
+                                    <tr>
+                                        <th>Device Name</th>
+                                        <th>Gateway</th>
+                                        <th>Device Type</th>
+                                        <th>Operation</th>
+                                    </tr>
+                                    <tr ng-repeat="(index, RegionDevice) in regionDeviceInfo">
+                                        <td>{{RegionDevice.device_name}}</td>
+                                        <td>{{RegionDevice.gateway_id}}</td>
+                                        <td>{{RegionDevice.device_type}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-xs" ng-click="deleteRegionDevice(RegionDevice)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" ng-if="!regionDeviceInfo || regionDeviceInfo.length==0" style="text-align: center">No data now</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Regional Group</h3>
+                    <div>
+                        <!--区域组-->
+                        <div class="panel panel-default"  style="margin: 5px;border-radius: 4px;">
+                            <div class="panel-heading" style="background-color:#fff">
+                                <div>
+                                    <strong>
+                                        {{RegionName}} Group List
+                                    </strong>
+                                    <div class="pannel-actions" style="float: right; margin-top: -4px;" ng-if="currentRegion != ''">
+                                        <button class="btn btn-success btn-xs" ng-click="newGroup()"><i class="glyphicon glyphicon-plus"></i> New Group</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tr>
+                                        <th>Group Name</th>
+                                        <th>Gateway</th>
+                                        <th>Operation</th>
+                                    </tr>
+                                    <tr ng-repeat="(index, regionGroup) in regionGroupInfo">
+                                        <td style="vertical-align: middle">{{regionGroup.group_name}}</td>
+                                        <td style="vertical-align: middle">{{regionGroup.gateway_id}}</td>
+                                        <td class="td-operation" style="vertical-align: middle">
+                                            <button type="button" class="btn btn-success btn-xs" ng-click="groupDetail('lg',regionGroup)">
+                                                <span class="glyphicon glyphicon-info-sign"></span>
+                                            </button>
+                                            <div class="btn btn-group">
+                                                <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+                                                    <span class="glyphicon glyphicon-edit"></span><span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu" style="font-size: 8px">
+                                                    <li><a ng-click="groupAddDevice('lg',regionGroup)"><span class="glyphicon glyphicon-plus"></span> Add Device</a></li>
+                                                    <li><a ng-click="renameGroup(regionGroup)"><span class="glyphicon glyphicon-pencil"></span> Rename</a></li>
+                                                </ul>
+                                            </div>
+                                            <button type="button" class="btn btn-warning btn-xs" ng-click="deleteRegionGroup(regionGroup)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" ng-if="!regionGroupInfo || regionGroupInfo.length==0" style="text-align: center">No data now</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Regional Scene</h3>
+                    <div>
+                        <!--区域场景-->
+                        <div class="panel panel-default"  style="margin:5px;border-radius: 4px;">
+                            <div class="panel-heading" style="background-color:#fff">
+                                <div>
+                                    <strong>
+                                        {{RegionName}} Scene List
+                                    </strong>
+                                    <div class="pannel-actions" style="float: right; margin-top: -4px;" ng-if="currentRegion != ''">
+                                        <button class="btn btn-success btn-xs" ng-click="newScene()"><i class="glyphicon glyphicon-plus"></i> New Scene</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tr>
+                                        <th>Scene Name</th>
+                                        <th>Gateway</th>
+                                        <th>Operation</th>
+                                    </tr>
+                                    <tr ng-repeat="(index,RegionScene) in regionSceneInfo">
+                                        <td style="vertical-align: middle">{{RegionScene.scene_name}}</td>
+                                        <td style="vertical-align: middle">{{RegionScene.gateway_id}}</td>
+                                        <td class="td-operation" style="vertical-align: middle">
+                                            <button type="button" class="btn btn-success btn-xs" ng-click="openSceneDetail('lg',RegionScene)">
+                                                <span class="glyphicon glyphicon-info-sign"></span>
+                                            </button>
+                                            <div class="btn btn-group">
+                                                <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+                                                    <span class="glyphicon glyphicon-edit"></span><span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu" style="font-size: 8px">
+                                                    <li><a ng-click="sceneAddDevice('lg',RegionScene)"><span class="glyphicon glyphicon-plus"></span> Add Device</a></li>
+                                                    <li><a ng-click="renameScene(RegionScene)"><span class="glyphicon glyphicon-pencil"></span> Rename</a></li>
+                                                </ul>
+                                            </div>
+                                            <button type="button" class="btn btn-warning btn-xs" ng-click="deleteRegionScene(RegionScene)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" ng-if="!regionSceneInfo || regionSceneInfo.length == 0" style="text-align: center">No data now</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <h3>Regional Recipe</h3>
+                    <div>
+                        <!--区域配方-->
+                        <div class="panel panel-default"  style="margin: 5px;border-radius: 4px;">
+                            <div class="panel-heading" style="background-color:#fff">
+                                <div>
+                                    <strong>
+                                        {{RegionName}} Recipe List
+                                    </strong>
+                                    <div class="pannel-actions pull-right" style="margin-top: -4px" ng-if="currentRegion != ''">
+                                        <button class="btn btn-success btn-xs" ng-click="addRegionRecipe()"><i class="glyphicon glyphicon-plus"></i> Add Recipe</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tr>
+                                        <th>Recipe Name</th>
+                                        <th>Period</th>
+                                        <th>Start Time</th>
+                                        <th>Status</th>
+                                        <th>Operation</th>
+                                    </tr>
+                                    <tr ng-repeat = 'regionRecipes in RegionRecipeList'>
+                                        <td>{{regionRecipes.name}}</td>
+                                        <td>{{regionRecipes.period}} Days</td>
+                                        <td ng-if="regionRecipes.status == '0'">No Implemented</td>
+                                        <td ng-if="regionRecipes.status != '0'">{{regionRecipes.start_time}}</td>
+                                        <td ng-if="regionRecipes.status == '0'">No Implemented</td>
+                                        <td ng-if="regionRecipes.status == '1'">Normal</td>
+                                        <td ng-if="regionRecipes.status == '2'">Abnormal</td>
+                                        <td class="td-operation">
+                                            <button type="button" class="btn btn-success btn-xs" ng-if="regionRecipes.status == '0'" ng-click="startRegionRecipe(regionRecipes)">
+                                                <span class="glyphicon glyphicon-play"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-warning btn-xs" ng-click="stopRegionRecipe(regionRecipes)" ng-if="regionRecipes.status != '0'">
+                                                <span class="glyphicon glyphicon-stop"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-warning btn-xs" ng-click="deleteRegionRecipe(regionRecipes)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" ng-if="!RegionRecipeList || RegionRecipeList.length == 0" style="text-align: center">No data now</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    $(function() {
+                        var icons = {
+                            header: "ui-icon-circle-arrow-e",
+                            activeHeader: "ui-icon-circle-arrow-s"
+                        };
+                        $( "#accordion" ).accordion({
+                            collapsible: true,
+                            active: 0,
+                            heightStyle: 'content',
+                            icons: icons
+                        });
+                        $( "#toggle" ).button().on( "click", function() {
+                            if ( $( "#accordion" ).accordion( "option", "icons" ) ) {
+                                $( "#accordion" ).accordion( "option", "icons", null );
+                            } else {
+                                $( "#accordion" ).accordion( "option", "icons", icons );
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<!--删除组弹窗提示-->
+<script type="text/ng-template" id="deleteGroupConfirm.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+
+    <div class="modal-body" ng-show="deleteGroupModalBody" cg-busy="{promise:deleteGroupProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <span>Count: {{vm.total}}</span>
+        <!--<span style="float: right;">At present: {{message}}</span>-->
+        <div ng-class="{progress: true,'progress-striped': true}">
+            <div ng-class="['progress-bar', vm.style]" ng-style="{width: vm.value + '%'}">
+                <div ng-if="vm.showLabel">{{vm.value}}%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" ng-show="deleteGroupModalFoot">
+        <button class="btn btn-success" type="button" ng-click="ok()">Ok</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+    <div class="modal-footer" ng-show="retryDeleteGroupModalFoot">
+        <button class="btn btn-success" type="button" ng-click="retryOk()">Retry</button>
+        <button class="btn btn-warning" type="button" ng-click="retryCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--组详情弹窗-->
+<script type="text/ng-template" id="regionalConfigGroup.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Group Detail</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:deleteGroupMemProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <table class="table" cg-busy="{promise:groupMemProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+                <tr>
+                    <th>Device Name</th>
+                    <th>Operation</th>
+                </tr>
+                <tr ng-repeat="(index, groupMember) in groupMemberInfo">
+                    <td>{{groupMember.device_name}}</td>
+                    <td class="td-operation">
+                        <a ng-click="deleteGroupMember(groupMember)">Remove</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" ng-if="!groupMemberInfo || groupMemberInfo.length == 0" style="text-align: center">No data now</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<!--添加组设备弹窗-->
+<script type="text/ng-template" id="addGroupDevice.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Device</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:addGroupMemProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Device Name</th>
+                    <th>Gateway</th>
+                    <th>Device Type</th>
+                    <th>Operation</th>
+                </tr>
+                <tr ng-repeat="(index, Device) in deviceInfo">
+                    <td>{{Device.device_name}}</td>
+                    <td>{{Device.gateway_id}}</td>
+                    <td>{{Device.device_type}}</td>
+                    <td class="td-operation">
+                        <a ng-if="Device.device_type == 'bulb'" ng-click="addDeviceToGroup(Device)">Add</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" ng-if="!deviceInfo || deviceInfo.length==0" style="text-align: center">No data now</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<!--新建组弹窗-->
+<script type="text/ng-template" id="newGroup.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New Group</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:newGroupProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Group Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Group Name" ng-model="my.newGroupName">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Gateway Setting</label>
+            <select class="form-control" ng-model="my.gateway" ng-options="gateway.gateway_id for gateway in GatewayInfo">
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="newGroupOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="newGroupCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--修改区域组名称弹窗-->
+<script type="text/ng-template" id="renameGroup.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Rename Group</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:renameGroupProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="row">
+            <div class="col-md-3" style="margin-top: 6px;">
+                <span>Group Name: </span>
+            </div>
+            <div class="col-md-8">
+                <span><input type="text" class="form-control" ng-model="groupName" style="text-align: center"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--删除区域设备弹窗-->
+<script type="text/ng-template" id="deleteRegionDeviceModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Are you sure to delete this device ?</h3>
+    </div>
+    <div class="modal-footer" cg-busy="{promise:deleteRegionDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--删除区域弹窗-->
+<script type="text/ng-template" id="deleteRegionModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body" ng-show="deleteRegionModalBody" cg-busy="{promise:deleteRegionProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <span>Count: {{vm.total}}</span>
+        <!--<span style="float: right;">At present: {{message}}</span>-->
+        <div ng-class="{progress: true,'progress-striped': true}">
+            <div ng-class="['progress-bar', vm.style]" ng-style="{width: vm.value + '%'}">
+                <div ng-if="vm.showLabel">{{vm.value}}%</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" ng-show="deleteRegionModalFoot">
+        <button class="btn btn-success" type="button" ng-click="ok()">Ok</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+    <div class="modal-footer" ng-show="retryDeleteRegionModalFoot">
+        <button class="btn btn-success" type="button" ng-click="retryOk()">Retry</button>
+        <button class="btn btn-warning" type="button" ng-click="retryCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--添加区域设备-->
+<script type="text/ng-template" id="addRegionDevice.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Device To Region</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:addRegionDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <!--用户设备-->
+        <table class="table" cg-busy="{promise:deviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+            <tr>
+                <th>Device Name</th>
+                <th>Gateway</th>
+                <th>Device Type</th>
+                <th>Operation</th>
+            </tr>
+            <tr ng-repeat="(index,Device) in deviceInfo">
+                <td ng-if="Device.device_type">{{Device.device_name}}</td>
+                <td ng-if="Device.device_type">{{Device.gateway_id}}</td>
+                <td ng-if="Device.device_type">{{Device.device_type}}</td>
+                <td ng-if="Device.device_type" class="td-operation">
+                    <a ng-click="addRegionDevice(Device)(Device)">Add</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" ng-if="!deviceInfo || deviceInfo.length==0" style="text-align: center">No Device Data</td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+    </div>
+</script>
+
+<!--修改区域名称弹窗-->
+<script type="text/ng-template" id="renameRegion.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Rename Region</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:renameRegionProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="row">
+            <div class="col-md-3" style="margin-top: 5px;">
+                <span>Regional Name: </span>
+            </div>
+            <div class="col-md-8">
+                <span><input type="text" class="form-control" ng-model="RegionName" style="text-align: center"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--删除场景弹窗提示-->
+<script type="text/ng-template" id="deleteSceneConfirm.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+
+    <div class="modal-body" ng-show="deleteSceneModalBody" cg-busy="{promise:deleteSceneProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <span>Count: {{vm.total}}</span>
+        <!--<span style="float: right;">At present: {{message}}</span>-->
+        <div ng-class="{progress: true,'progress-striped': true}">
+            <div ng-class="['progress-bar', vm.style]" ng-style="{width: vm.value + '%'}">
+                <div ng-if="vm.showLabel">{{vm.value}}%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" ng-show="deleteSceneModalFoot">
+        <button class="btn btn-success" type="button" ng-click="ok()">Ok</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+    <div class="modal-footer" ng-show="retryDeleteSceneModalFoot">
+        <button class="btn btn-success" type="button" ng-click="retryOk()">Retry</button>
+        <button class="btn btn-warning" type="button" ng-click="retryCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--场景详情弹窗-->
+<script type="text/ng-template" id="regionalConfigScene.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Scene Detail</h3>
+    </div>
+    <div class="modal-body"  cg-busy="{promise:deleteSceneProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="row">
+            <div class="col-md-10">
+                <select class="form-control" ng-model="sceneMem" ng-options="sceneMem.device_name for sceneMem in sceneMembers" ng-change="selectSceneMem(sceneMem)">
+                    <option value=""><---Select Device---></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-danger btn-sm" ng-click="deleteSceneMember()">Remove</button>
+            </div>
+        </div>
+        <div class="progress-block row" ng-repeat="channel in sceneMemChannel">
+            <div class="col-md-3" style="margin-top: 28px;">Name: {{channel.channel_name}}(%)</div>
+            <div class="col-md-7">
+                <article>
+                    <rzslider
+                            rz-slider-model="channel.channel_value"
+                            rz-slider-options="slider_callbacks.options"
+                    ></rzslider>
+                </article>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+    </div>
+</script>
+
+<!--添加场景成员弹窗-->
+<script type="text/ng-template" id="addSceneDevice.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Device</h3>
+    </div>
+    <div class="modal-body"  cg-busy="{promise:addSceneMemProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <select class="form-control" ng-model="deviceinfo" ng-options="deviceinfo.device_name for deviceinfo in deviceInfo" ng-change="selectDevice(deviceinfo)">
+                <option value=""><---Select Device---></option>
+            </select>
+        </div>
+        <div class="progress-block row" ng-repeat="channel in deviceChannel">
+            <div class="col-md-3" style="margin-top: 28px;">Name: {{channel.channel_name}}(%)</div>
+            <div class="col-md-7">
+                <article>
+                    <rzslider
+                            rz-slider-model="channel.channel_value"
+                            rz-slider-options="slider_callbacks.options"
+                    ></rzslider>
+                </article>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="addSceneMem(deviceChannel)">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="addSceneMemCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--新建场景弹窗-->
+<script type="text/ng-template" id="newScene.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New Scene</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:newSceneProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="form-group">
+            <label for="exampleInputEmail1" ng-model="newSceneName">Scene Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Scene Name" ng-model="my.newSceneName">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Gateway Setting</label>
+            <select class="form-control" ng-model="my.gateway" ng-options="gateway.gateway_id for gateway in GatewayInfo">
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="newSceneOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="newSceneCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--修改场景名称弹窗-->
+<script type="text/ng-template" id="renameScene.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Rename Scene</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:renameSceneProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="row">
+            <div class="col-md-3" style="margin-top: 6px;">
+                <span>Scene Name: </span>
+            </div>
+            <div class="col-md-8">
+                <span><input type="text" class="form-control" ng-model="sceneName" style="text-align: center"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--添加区域配方弹窗-->
+<script type="text/ng-template" id="addRecipeToRegion.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Recipe</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:privateRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Recipe Name</th>
+                    <th>Operation</th>
+                </tr>
+                <tr ng-repeat="privateRecipes in privateRecipeList">
+                    <td>{{privateRecipes.crop_name}}</td>
+                    <td class="td-operation">
+                        <a ng-click="addRecipeToRegion(privateRecipes)">Add</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" ng-if="!privateRecipeList || privateRecipeList.length == 0" style="text-align: center">No data now</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<!--应用配方-->
+<script type="text/ng-template" id="playRegionRecipe.html">
+    <div class="modal-header" cg-busy="{promise:startRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <h3 class="modal-title">Are you sure to apply this recipe ?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--停止配方-->
+<script type="text/ng-template" id="stopRegionRecipe.html">
+    <div class="modal-header" cg-busy="{promise:stopRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <h3 class="modal-title">Are you sure to stop current recipe ?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--删除区域配方-->
+<script type="text/ng-template" id="deleteRegionRecipe.html">
+    <div class="modal-header" cg-busy="{promise:deleteRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <h3 class="modal-title">Are you sure to delete current recipe ?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--新建区域-->
+<script type="text/ng-template" id="newRegion.html">
+    <div class="modal-header" cg-busy="{promise:newRegionProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <h3 class="modal-title">New Region</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Region Name</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Region Name" ng-model="my.newRegionName">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Gateway Setting</label>
+            <select class="form-control" ng-model="my.gateway" ng-options="gateway.gateway_id for gateway in GatewayInfo">
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+

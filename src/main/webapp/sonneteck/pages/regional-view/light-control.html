@@ -1,0 +1,50 @@
+<div ui-view="topNav"></div>
+<div class="light container">
+    <div class="body-container">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="optGroup">
+                    <div class="form-inline top-block">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control group-input" id="" placeholder="light1">
+                                <button class="btn btn-info">rename</button>
+                            </div>
+                            <span class="color-gray">Setup Date:2015-12-1 </span>
+                        </div>
+                        <div class="col-md-6 btn-div">
+                            <div class="col-md-10">
+                                <div><button class="btn btn-info">Detailized Info</button></div>
+                                <span  class="color-gray">Detail info to be confirm</span>
+                            </div>
+                            <!--<div class="col-md-2"><img src="./images/open.png" alt=""></div>-->
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <form style="float: right;">
+                                <switch id="enabled" name="enabled" ng-model="enabled" class="green" ng-change="lightControlSwitch()">
+                                </switch>
+                            </form>
+                        </div>
+                        <div ng-repeat="lightchannel in lightChannel">
+                            <div class="col-md-2">{{lightchannel.channel_name}}</div>
+                            <div>
+                                <input
+                                        id="myRange"
+                                        type="range"
+                                        min="1"
+                                        max="255"
+                                        step="1"
+                                        value="{{lightchannel.value}}"
+                                        ng-model="lightchannel.lightControlValue">
+                                <span readonly="true" placeholder="{{lightchannel.value}}">{{lightchannel.lightControlValue}}</span>
+                            </div>
+                            <button class="btn btn-success" ng-click="control(lightchannel)">Sure</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<script type="text/ng-template" id="mytabs.html" >
+    <div class="set-nav">
+        <ul style="float:none; margin-bottom:10px; margin-top:0;" class="nav navbar-nav navCont" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" ng-transclude></ul>
+        <div class="tab-content">
+            <div class="tab-pane"
+                 ng-repeat="tab in tabset.tabs"
+                 ng-class="{active: tabset.active === tab.index}"
+                 uib-tab-content-transclude="tab">
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="mytab.html" >
+    <li ng-class="[{active: active, disabled: disabled}, classes]" class="uib-tab nav-item">
+        <a href ng-click="select($event)" class="nav-link" uib-tab-heading-transclude>{{heading}}</a>
+    </li>
+</script>
+
+
+<uib-tabset template-url="mytabs.html" active="activeForm">
+    <uib-tab template-url="mytab.html" index="0" heading="Regional Device">
+        <div ui-view="conf-region"></div>
+    </uib-tab>
+    <uib-tab template-url="mytab.html" index="1" heading="Regional Group">
+        <div ui-view="conf-group"></div>
+    </uib-tab>
+    <uib-tab template-url="mytab.html" index="2" heading="Regional Scene">
+        <div ui-view="conf-scene"></div>
+    </uib-tab>
+    <!--<uib-tab template-url="mytab.html" index="3" heading="Term Setting">-->
+        <!--<div ui-view="conf-term"></div>-->
+    <!--</uib-tab>-->
+
+    <uib-tab template-url="mytab.html" index="3" heading="Regional Recipe">
+    <div ui-view="conf-recipe"></div>
+    </uib-tab>
+</uib-tabset>

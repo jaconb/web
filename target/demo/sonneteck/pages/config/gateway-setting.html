@@ -1,0 +1,95 @@
+<div class="gateway-set container">
+    <div class="container col-md-12">
+      <div class="panel panel-default"  style="margin:5px;border-radius: 2px;">
+          <div class="panel-heading" style="background-color:#fff">
+              <div>
+                <strong>
+                  Gateway List
+                </strong>
+                <!--<div class="pannel-actions pull-right">
+                  <button class="btn btn-success" ng-click="addDevice('lg')"><i class="glyphicon glyphicon-plus"></i> Add Device</button>
+                </div>-->
+              </div>
+          </div>
+          <div class="panel-body" cg-busy="{promise:gatewayProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+              <table class="table">
+                  <tr>
+                      <th>Gateway</th>
+                      <!--<th>Gateway Address</th>-->
+                      <th>Operation</th>
+                  </tr>
+                  <tr ng-repeat="(index, gateway) in gatewayList">
+                      <td>{{gateway.gateway_id}}</td>
+                      <!--<td>{{gateway.group_addr}}</td>-->
+                      <td class="td-operation" style="vertical-align: middle">
+                          <button type="button" class="btn btn-success btn-xs" ng-click="gatewayDetail('lg',gateway)">
+                              <span class="glyphicon glyphicon-info-sign"></span>
+                          </button>
+                          <button type="button" class="btn btn-success btn-xs" ng-click="updateGateway(gateway)">
+                              <span class="glyphicon glyphicon-refresh"></span>
+                          </button>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td colspan="3" ng-if="!gatewayList || gatewayList.length==0" style="text-align: center">No data now</td>
+                  </tr>
+              </table>
+          </div>
+      </div>
+    </div>
+</div>
+
+<!--网关下的设备列表弹窗-->
+<script type="text/ng-template" id="gatewayDetail.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Detail Of Gateway {{gatewayId}}</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:findGatewayDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <!--用户设备-->
+        <table class="table" cg-busy="{promise:renameDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+            <tr>
+                <th>Device Name</th>
+                <th>Device Type</th>
+                <th>Operation</th>
+            </tr>
+            <tr ng-repeat="(index,Device) in gatewayDeviceInfo" style="vertical-align: middle">
+                <td ng-if="Device.device_type">{{Device.device_name}}</td>
+                <td ng-if="Device.device_type">{{Device.device_type}}</td>
+                <td ng-if="Device.device_type" class="td-operation">
+                    <!--<button class="btn btn-success btn-xs" ng-click="renameDevice(Device)">-->
+                        <!--<span class="glyphicon glyphicon-edit"></span>-->
+                    <!--</button>-->
+                    <a style="cursor: pointer" ng-click="renameDevice(Device)">Rename</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" ng-if="!gatewayDeviceInfo || gatewayDeviceInfo.length == 0 " style="text-align: center">No Device Data</td>
+            </tr>
+        </table>
+        <div  ng-show="renameDeviceDiv">
+            <div class="col-md-5 row"  style="margin-left: 140px">
+                <div class="col-md-2">
+                    <label style="margin-top: 6px">Rename: </label>
+                </div>
+                <div class="col-md-8">
+                    <input style="float: right;text-align: center" class="form-control" ng-model="deviceName">
+                </div>
+            </div>
+            <button style="margin-top: 6px;margin-left: 15px" class="btn btn-success btn-xs" ng-click="renameDeviceOk()">Apply</button>
+            <button style="margin-top: 6px" class="btn btn-warning btn-xs" ng-click="hideRenameDiv()">Cancel</button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    </div>
+</script>
+<!--更新网关-->
+<script type="text/ng-template" id="updateGateway.html">
+    <div class="modal-header" cg-busy="{promise:updateGatewayProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <h3 class="modal-title">Are you sure to update {{gatewayId}} ?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

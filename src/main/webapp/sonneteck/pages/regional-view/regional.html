@@ -1,0 +1,79 @@
+<div login-dialog ng-if="!isLoginPage"></div>
+
+<div class="container">
+    <div class="col-md-6"  ng-repeat="regionData in RegionAndSensorData">
+        <div class="regional">
+            <!--<div class="check">
+                <img src="./images/noCheck.png" alt="">
+            </div>-->
+            <div class="thumbnail"  cg-busy="{promise:prom,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+                <img src="./images/baby-romaine.png" alt="">
+            </div>
+            <ul class="ul-block" ng-click="toDetail(regionData)">
+                <li style="margin-top: 15px;font-size: 15px">Region: {{regionData.region_name}}</li>
+                <li ng-if="regionData.status == '1'">Running status: <i class="icon-circle icon-large" style="color: #FF0000"></i></li>
+                <li ng-if="regionData.status != '1'">Running status: <i class="icon-circle icon-large" style="color: #00C900"></i></li>
+                <!--<li>Current recipe: Baby Romaine</li>-->
+                <!--<li>Estime to harvest: 18 days</li>-->
+
+                <li class="li-block" style="margin-top: 45px;">
+                    <div class="col-md-4">
+                        <div class="img">
+                            <img src="./images/EC.png" alt="">
+                        </div>
+                        <span ng-if="regionData.realTimeData.substrate_Conductivity">EC:{{regionData.realTimeData.substrate_Conductivity}}</span>
+                        <span ng-if="!regionData.realTimeData.substrate_Conductivity">EC:no data</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="img">
+                            <img src="./images/air.png" alt="">
+                        </div>
+                        <span ng-if="regionData.realTimeData.carbon_Dioxide">CO2:{{regionData.realTimeData.carbon_Dioxide}}</span>
+                        <span ng-if="!regionData.realTimeData.carbon_Dioxide">CO2:no data</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="img">
+                            <img src="./images/light.png" alt="">
+                        </div>
+                        <span ng-if="regionData.realTimeData.ppfd">PPFD:{{regionData.realTimeData.ppfd}}</span>
+                        <span ng-if="!regionData.realTimeData.ppfd">PPFD:no data</span>
+                    </div>
+                </li>
+                <li class="li-block" style="">
+                    <div class="col-md-4">
+                        <div class="img">
+                            <img src="./images/RH.png" alt="">
+                        </div>
+                        <span ng-if="regionData.realTimeData.air_Humidity">RH:{{regionData.realTimeData.air_Humidity}}</span>
+                        <span ng-if="!regionData.realTimeData.air_Humidity">RH:no data</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="img">
+                            <img src="./images/ph.png" alt="">
+                        </div>
+                        <span ng-if="regionData.realTimeData.substrate_PH">PH:{{regionData.realTimeData.substrate_PH}}</span>
+                        <span ng-if="!regionData.realTimeData.substrate_PH">PH:no data</span>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="img">
+                            <img src="./images/temputure.png" alt="">
+                        </div>
+                        <span ng-if="regionData.realTimeData.air_Temperature">TEMP:{{regionData.realTimeData.air_Temperature}}</span>
+                        <span ng-if="!regionData.realTimeData.air_Temperature">TEMP:no data</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--无数据提示-->
+    <div>
+        <div class="col-md-6" ng-if="!RegionAndSensorData || RegionAndSensorData.length == 0">
+            <div class="regional">
+                <div class="thumbnail">
+                    <img src="./images/no-region-now.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

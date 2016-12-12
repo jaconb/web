@@ -1,0 +1,33 @@
+<toaster-container></toaster-container>
+<div class="login-block vh-center">
+    <div class="login-topimg">
+        <img src="./images/sonneteck-logo.png" alt="sonneteck">
+        <span>Sonneteck  IOT  Administrator  System</span>
+    </div>
+    <div class="login-form" cg-busy="{promise:loginProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <form name="loginForm" ng-submit="login(credentials)">
+            <div class="form-group input-img-left">
+                <img src="./images/input-name.png" alt="" class="input-name">
+                <input type="text" class="form-control input" placeholder="E-mail Address" ng-model="credentials.e_mail" name="user">
+            </div>
+            <div class="form-group input-img-left">
+                <img src="./images/input-pwd.png" alt="" class="input-pwd">
+                <input type="password" class="form-control input" placeholder="Password" ng-model="credentials.password" name="pass">
+            </div>
+            <!--<div class="checkbox">-->
+                <!--<label for="remember" class="checkText">-->
+                    <!--<input type="checkbox" id="remember">Remember me-->
+                <!--</label>-->
+            <!--</div>-->
+
+            <div style="margin-top: 40px">
+                <button type="submit"class="mybtn btn-blue btn-block">Login</button>
+            </div>
+            <div>
+                Please
+                <a style="cursor:pointer;" href="mailto:support@sonneteck.com">contact us</a>
+                if you forget password
+            </div>
+        </form>
+    </div>
+</div>

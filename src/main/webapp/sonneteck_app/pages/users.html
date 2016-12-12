@@ -1,0 +1,19 @@
+<ion-view view-title="Users">
+  <ion-content>
+
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+
+    <button class="button button-full button-balanced" ng-click="newUser()">
+      New User
+    </button>
+
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="user in users" type="item-text-wrap" ng-click="toUserDetail(user)">
+        <img ng-src="">
+        <h2>User：{{user.user_name}}({{user.role}})</h2>
+        <p>E_mail：{{user.e_mail}}</p>
+        <i class="icon ion-chevron-right icon-accessory" ng-if="user.role != 'Admin'"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

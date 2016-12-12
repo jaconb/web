@@ -1,0 +1,182 @@
+<!--删除用户弹窗提示-->
+<script type="text/ng-template" id="deleteUserConfirm.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Are you sure to delete {{deleteUserName}} ?</h3>
+    </div>
+    <div class="modal-footer" cg-busy="{promise:deleteUserProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <button class="btn btn-success" type="button" ng-click="deleteUserOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="deleteUserCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--禁用用户弹窗提示-->
+<script type="text/ng-template" id="disableUserConfirm.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Are you sure to disabled {{disableUserName}} ?</h3>
+    </div>
+    <div class="modal-footer" cg-busy="{promise:disabledUserProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <button class="btn btn-success" type="button" ng-click="disableUserOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="disableUserCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--解禁用户弹窗提示-->
+<script type="text/ng-template" id="enabledUserConfirm.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Are you sure to enabled {{enabledUserName}} ?</h3>
+    </div>
+    <div class="modal-footer" cg-busy="{promise:enabledUserProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <button class="btn btn-success" type="button" ng-click="enabledUserOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="enablesUserCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--用户详情并修改弹窗-->
+<script type="text/ng-template" id="userDetail.html">
+    <div class="modal-header">
+        <h3 class="modal-title">User Detail</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:editUserProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="form-group">
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">User Name</label>
+            </div>
+            <div class="col-md-12">
+                <input type="text" class="form-control" id="exampleInputEmail5" placeholder="{{users.user_name}}" ng-model="users.user_name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">Phone</label>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" ng-model="my.country" ng-options="country.countryId for country in countries">
+                    <option value="">{{users.country}}</option>
+                </select>
+            </div>
+            <div class="col-md-9">
+                <input type="tel" class="form-control" id="exampleInputEmail7" placeholder="{{users.phone}}" ng-model="users.phone">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">E-mail</label>
+            </div>
+            <!--<div class="col-md-12">-->
+                <input type="email" class="form-control" style="margin-left:16px;width: 537px" id="exampleInputEmail6" placeholder="{{users.e_mail}}" ng-model="users.e_mail">
+            <!--</div>-->
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="editUserOk(users)">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="editUserCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--新建子用户弹窗-->
+<script type="text/ng-template" id="newUser.html">
+    <div class="modal-header">
+        <h3 class="modal-title">New User</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:newUserProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">User Name</label>
+            </div>
+            <div class="col-md-12">
+                <input type="text" class="form-control input" id="exampleInputEmail1" placeholder="User Name" ng-model="my.newUserName">
+            </div>
+        </div>
+
+        <div>
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">Email Address</label>
+            </div>
+            <div class="col-md-12">
+                <input type="email" class="form-control input" id="exampleInputEmail3" placeholder="E-mail" ng-model="my.newUserEmail">
+            </div>
+        </div>
+
+        <div>
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">Phone Number</label>
+            </div>
+            <div class="col-md-3">
+                <select  class="form-control" ng-model="my.country" ng-options="country.countryId for country in countries">
+                    <option value="">select</option>
+                </select>
+            </div>
+            <div class="col-md-9">
+                <input type="tel" class="form-control" id="exampleInputEmail4" placeholder="Phone Number" ng-model="my.newUserPhone">
+            </div>
+        </div>
+        <div>
+            <div class="col-md-12">
+                <label for="exampleInputEmail1">Password</label>
+            </div>
+            <input type="password" style="margin-left:16px;width: 537px" class="form-control input" id="exampleInputEmail2" placeholder="Password" ng-model="my.newUserPassword">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="newUserOk()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="newUserCancel()">Cancel</button>
+    </div>
+</script>
+
+<!--主页-->
+<div class="gateway-set container">
+    <div class="body-container">
+        <div class = "panel panel-default"  style="margin:5px;border-radius: 2px;">
+            <div class="panel-heading" style="background-color:#fff">
+                <div>
+                    <strong>
+                        User List
+                    </strong>
+                    <div class="pannel-actions" style="float: right; margin-top: -6px;">
+                        <button class="btn btn-success btn-sm" ng-click="newUser()"><i class="glyphicon glyphicon-plus"></i> New User</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body" cg-busy="{promise:userProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+                <table class="table">
+                    <tr>
+                        <th>UserName</th>
+                        <th>E-mail</th>
+                        <th>PhoneNumber</th>
+                        <th>Role</th>
+                        <th>Operation</th>
+                    </tr>
+                    <tr ng-if="Adminnisusers.length != 0" ng-repeat="Users in Adminnisusers">
+                        <td>{{Users.user_name}}</td>
+                        <td>{{Users.e_mail}}</td>
+                        <td>({{Users.country}}){{Users.phone}}</td>
+                        <td>{{Users.role}}</td>
+                        <td class="td-operation">
+                            <button type="button" class="btn btn-success btn-xs" ng-if="Users.role != 'Admin'" ng-click="editUser(Users)">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </button>
+                            <button type="button" class="btn btn-warning btn-xs" ng-if="Users.role != 'Admin'" ng-click="deleteUser(Users)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            <button type="button" class="btn btn-warning btn-xs"  ng-if="Users.user_authorization !== '0' && Users.role != 'Admin'" ng-click="disableUser(Users)">
+                                <span class="glyphicon glyphicon-ban-circle"></span>
+                            </button>
+                            <button type="button" class="btn btn-success btn-xs"  ng-if="Users.user_authorization == '0' && Users.role != 'Admin'" ng-click="enableUser(Users)">
+                                <span class="glyphicon glyphicon-ok-circle"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" ng-if="!Adminnisusers || Adminnisusers.length == 0" style="text-align: center">No data now</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

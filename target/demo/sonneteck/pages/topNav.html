@@ -1,0 +1,80 @@
+<div class="top-nav">
+    <div class="container">
+        <nav class="navbar">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="javascript:void(0);">
+                    <img src="./images/sonneteck-logo.png" alt="sonneteck">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li ng-if="nav.role" ng-class="nav.className" ng-repeat="nav in navs">
+                        <!--<li ng-class="nav.class" ng-repeat="nav in navs">-->
+                            <a ng-click="changeClass(this)" ui-sref="{{nav.url}}">{{nav.title}}</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <ul class="nav navbar-nav pull-right">
+                    <li><a class="text-admin" href="javascript:void(0);">Current User: {{userName}}</a></li>
+                    <!--<li><a class="text-logout" style="cursor:pointer;" ng-click="logout()">logout</a></li>-->
+                    <div class="dropdown" style="float: right;margin-top: 15px">
+                        <button class="btn btn-default dropdown-toggle btn-xs" type="button" id="menu1" data-toggle="dropdown" style="border: 0">
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="menu1" style="font-size: 12px;">
+                            <li role="presentation"><a role="menuitem" style="cursor:pointer;" tabindex="-1" ng-click="resetPwd('lg')"><span class="glyphicon glyphicon-pencil"></span> Reset password</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" style="cursor:pointer;" ng-click="logout()"><span class="glyphicon glyphicon-off"></span> Log out</a></li>
+                        </ul>
+                    </div>
+                </ul>
+
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!--重置密码弹窗-->
+<script type="text/ng-template" id="resetPwd.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Reset Password</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:resetPwdProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+
+        <div class="row">
+            <div class="col-md-4" style="margin-top: 6px;">
+                <label>Old Password:</label>
+            </div>
+            <div class="col-md-8">
+                <input type="password" class="form-control" style="text-align: center" placeholder="Old Password" ng-model="oldPwd">
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 15px">
+            <div class="col-md-4" style="margin-top: 6px;">
+                <label>New Password:</label>
+            </div>
+            <div class="col-md-8">
+                <input type="password" class="form-control" style="text-align: center" placeholder="New Password" ng-model="newPwd">
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 15px">
+            <div class="col-md-4" style="margin-top: 6px;">
+                <label>Again New Password:</label>
+            </div>
+            <div class="col-md-8">
+                <input type="password" class="form-control" style="text-align: center" placeholder="Again New Password" ng-model="againNewPwd">
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

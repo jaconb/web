@@ -1,0 +1,57 @@
+<!--<ion-view view-title="Regional Config">
+  <ion-content>
+    <ion-list>
+    <ion-toggle  ng-model="settings.enableFriends">
+        Enable Friends
+    </ion-toggle>
+    </ion-list>
+  </ion-content>
+</ion-view>-->
+
+<ion-view view-title="Regional Config">
+    <ion-content class="padding">
+        <!--<div class="list list-inset">
+            <label class="item item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="text" placeholder="Search">
+            </label>
+        </div>-->
+        <button class="button button-full button-balanced" ng-click="newRegional()">
+            New Regional
+        </button>
+        <ion-list class="ragional-view">
+            <!--<ion-item class="item item-thumbnail-left " ng-repeat="regional in regionals" type="item-text-wrap" href="#/config/regional?regionalId={{regional.id}}">-->
+            <ion-item class="item item-thumbnail-left " ng-repeat="regional in regionals" type="item-text-wrap"ng-click="toSetRegional(regional.region_guid, regional.gateway_id, regional)">
+                <img src="./images/live-stream.jpg">
+                <h2>{{regional.region_name}}</h2>
+                <!--<h2>{{regional.region_name}}</h2>-->
+                <div class="row">
+                    <p ng-if="!regional.realTimeData.soil_PH_value" class="col col-50" style="font-size: 10px">PH:</p>
+                    <p ng-if="regional.realTimeData.soil_PH_value" class="col col-50" style="font-size: 10px">PH: {{regional.realTimeData.soil_PH_value}}</p>
+
+                    <p ng-if="!regional.realTimeData.photons" class="col col-50" style="font-size: 10px">EC:</p>
+                    <p ng-if="regional.realTimeData.photons" class="col col-50" style="font-size: 10px">EC: {{regional.realTimeData.photons}}</p>
+                </div>
+                <div class="row">
+                    <p ng-if="!regional.realTimeData.air_humidity" class="col col-50" style="font-size: 10px">RH:</p>
+                    <p ng-if="regional.realTimeData.air_humidity" class="col col-50" style="font-size: 10px">RH: {{regional.realTimeData.air_humidity}}</p>
+
+                    <p ng-if="!regional.realTimeData.air_temperature" class="col col-50" style="font-size: 10px">TEMP:</p>
+                    <p ng-if="regional.realTimeData.air_temperature" class="col col-50" style="font-size: 10px">TEMP: {{regional.realTimeData.air_temperature}}</p>
+                </div>
+                <div class="row">
+                    <p ng-if="!regional.realTimeData.carbon_dioxide" class="col col-50" style="font-size: 10px">CO2:</p>
+                    <p ng-if="regional.realTimeData.carbon_dioxide" class="col col-50" style="font-size: 10px">CO2: {{regional.realTimeData.carbon_dioxide}}</p>
+
+                    <p ng-if="!regional.realTimeData.soil_temperature" class="col col-50" style="font-size: 10px">PPFD:</p>
+                    <p ng-if="regional.realTimeData.soil_temperature" class="col col-50" style="font-size: 10px">PPFD: {{regional.realTimeData.soil_temperature}}</p>
+                </div>
+            </ion-item>
+
+            <ion-item class="item item-thumbnail-left " ng-if="!regionals || regionals.length == 0" type="item-text-wrap">
+                <img src="./images/noData.png">
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
+

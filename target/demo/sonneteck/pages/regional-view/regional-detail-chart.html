@@ -1,0 +1,193 @@
+<div class="row" style="padding: 0" cg-busy="{promise:getSensorDataProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+    <div class="col-md-12" cg-busy="{promise:sensorDataProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div style="padding-left: 0px" ng-show="chartShow">
+            <div style="float: left">
+                <button class="btn btn-success btn-sm" ng-click="toChartDetail()">Detail</button>
+                <button id="export" class="btn btn-success btn-sm" ng-click="downLoad()">Download</button>
+            </div>
+            <div class="pull-right">
+                <select style="float: left;width: 100px" class="form-control" ng-model="my.name" ng-options="findStandard.name for findStandard in findStandard">
+                </select>
+                <button style="margin-left: 10px" class="btn btn-sm btn-success" ng-click="find()">Apply</button>
+            </div>
+        </div>
+        <!--下面的div主要是间隔上下两个-->
+        <div style="height: 8px" class="col-md-12"></div>
+        <!--曲线图-->
+        <div class="col-md-12"  ng-show="chartShow">
+            <div class="col-md-12">
+                <a style="cursor: pointer;text-decoration: none;" ng-click="last()">
+                    <span class="glyphicon glyphicon-chevron-left"></span> Last {{my.standard}}
+                </a>
+                <a class="pull-right" style="cursor: pointer;text-decoration: none" ng-click="next()">
+                    Next {{my.standard}} <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </div>
+            <div id="container" style="height: 560px;padding-left: 0px">
+                <div ng-if="!dataContent || dataContent == 'noData'" align="center">
+                    <img ng-if="dataContent == 'noData'" class="Absolute-Center" src="./images/noData.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!--统计图详情-->
+        <div class="col-md-12" ng-show="chartDetailShow">
+            <div class="panel panel-default" style="border-radius: 6px;">
+                <div class="panel-heading">
+                    <div>
+                        <strong>
+                            Sensor Data Detail
+                        </strong>
+                        <div class="pannel-actions" style="float: right; margin-top: -2px">
+                            <button type="button" class="btn btn-warning btn-xs" ng-click="closeChartDetail()">
+                                <span class="glyphicon glyphicon-remove-sign"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="container col-md-12">
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel()">Export Excel</button>
+                                </div>
+                                <div id="chart_container" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel1()">Export Excel</button>
+                                </div>
+                                <div id="chart_container1" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel2()">Export Excel</button>
+                                </div>
+                                <div id="chart_container2" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel3()">Export Excel</button>
+                                </div>
+                                <div id="chart_container3" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel4()">Export Excel</button>
+                                </div>
+                                <div id="chart_container4" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel5()">Export Excel</button>
+                                </div>
+                                <div id="chart_container5" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel6()">Export Excel</button>
+                                </div>
+                                <div id="chart_container6" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel7()">Export Excel</button>
+                                </div>
+                                <div id="chart_container7" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel8()">Export Excel</button>
+                                </div>
+                                <div id="chart_container8" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel9()">Export Excel</button>
+                                </div>
+                                <div id="chart_container9" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel10()">Export Excel</button>
+                                </div>
+                                <div id="chart_container10" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel11()">Export Excel</button>
+                                </div>
+                                <div id="chart_container11" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel12()">Export Excel</button>
+                                </div>
+                                <div id="chart_container12" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div>
+                                <div>
+                                    <button class="btn btn-success btn-xs" ng-click="ExportChartDetailToExcel13()">Export Excel</button>
+                                </div>
+                                <div id="chart_container13" style="height:250px;width: 380px">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<ion-view view-title="Group"> 
+    <ion-content>
+        <div class="list list-inset padding">
+            <ion-item class="item item-icon-right" ng-repeat="group in groupList" type="item-text-wrap" ng-click="toGroupDetail(group)">
+                <h2>{{group.group_name}}</h2>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+            </ion-item>
+        </div>
+    </ion-content>
+</ion-view>

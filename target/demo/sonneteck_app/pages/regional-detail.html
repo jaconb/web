@@ -1,0 +1,36 @@
+<ion-view view-title="Regional Detail">
+    <ion-content class="padding">
+        <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+        <div class="button-bar title-button">
+            <a class="button button-margin button-color" ng-click="toDeviceCtrl()">Device Ctrl</a>
+            <a class="button button-margin button-color" ng-click="toGroupCtrl()">Group Ctrl</a>
+            <a class="button button-color" ng-click="toSceneCtrl()">Scene Ctrl</a>
+        </div>
+        <div class="list card">
+
+            <div class="item">
+                <div style="float: right;">
+                    <button class="button button-balanced" ng-click="ctrlRegionWhiteOn()">White On</button>
+                    <button class="button button-assertive" ng-click="ctrlRegionWhiteOff()">White Off</button>
+                    <button class="button button-balanced" ng-click="ctrlRegionOn()">On</button>
+                    <button class="button button-assertive" ng-click="ctrlRegionOff()">Off</button>
+                </div>
+            </div>
+            
+            <div class="item range range-positive" ng-repeat="channel in channelList">
+                {{channel.channel_name}}
+                <i class="icon ion-ios-sunny-outline"></i>
+                <input type="range" name="volume" min="0" max="100" ng-model="channel.channel_value"  on-release="ctrlChannel(channelList)">{{channel.channel_value}}%
+                <i class="icon ion-ios-sunny"></i>
+                <!--<button class="button button-small button-balanced" ng-click="ctrlChannel(channel)">apply</button>-->
+            </div>
+                
+            <!--<div>              
+                <input type="text" ng-model="aa.testList[1].num">
+
+                <input type="text" ng-model="aa.testList[index].num" ng-repeat="(index, value) in aa.testList">
+            </div>-->
+          </div>
+    </ion-content>
+</ion-view>
+

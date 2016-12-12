@@ -1,0 +1,994 @@
+<div class="container">
+    <div class="container col-md-12">
+        <div class="panel panel-default"  style="margin:5px;border-radius: 2px;">
+            <div class="panel-heading" style="background-color:#fff">
+                <div style="vertical-align: middle">
+                    <strong>
+                        Recipe List
+                    </strong>
+                    <div class="pannel-actions" style="float: right;margin-top: -13px">
+                        <div class="btn btn-group">
+                            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-plus"></span> Add Recipe <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a ng-click="copyRecipeFromCloud()"><span class="glyphicon glyphicon-cloud-download"></span> Copy From Cloud</a></li>
+                                <li><a ng-click="addRecipe()"><span class="glyphicon glyphicon-plus-sign"></span> New Recipe</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" cg-busy="{promise:privateRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+                <div>
+                    <table class="table">
+                        <tr>
+                            <th>Recipe Name</th>
+                            <th>Create Time</th>
+                            <th>Operation</th>
+                        </tr>
+                        <tr ng-repeat="privateRecipes in privateRecipeList">
+                            <td style="vertical-align: middle">{{privateRecipes.crop_name}}</td>
+                            <td style="vertical-align: middle">{{privateRecipes.create_time}}</td>
+                            <td class="td-operation" style="vertical-align: middle">
+                                <button type="button" class="btn btn-success btn-xs" ng-click="recipeDetail('lg',privateRecipes)">
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </button>
+                                <div class="btn btn-group">
+                                    <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        <span class="glyphicon glyphicon-edit"></span><span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" style="font-size: 8px">
+                                        <li><a ng-click="deleteDaysFromRecipe('lg',privateRecipes)">Delete days From this</a></li>
+                                        <li><a ng-click="addDaystoRecipe('lg',privateRecipes)">Add days to this</a></li>
+                                        <li><a ng-click="editRecipeData('lg',privateRecipes)">Edit data of this</a></li>
+                                        <li><a ng-click="renameRecipe('lg',privateRecipes)">Rename this</a></li>
+                                        <li><a ng-click="LightRate('lg',privateRecipes)">Light intensity</a></li>
+                                    </ul>
+                                </div>
+                                <button type="button" class="btn btn-warning btn-xs" ng-click="deletePrivateRecipe(privateRecipes)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" ng-if="!privateRecipeList || privateRecipeList.length == 0" style="text-align: center">No data now</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--下载配方弹窗-->
+<script type="text/ng-template" id="copyRecipe.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Copy Recipe</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:publicRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Recipe Name</th>
+                    <th>Operation</th>
+                </tr>
+                <tr ng-repeat="publicRecipes in publicRecipeList">
+                    <td>{{publicRecipes.crop_name}}</td>
+                    <td class="td-operation">
+                        <a ng-click="copyPublicRecipe(publicRecipes)">Copy</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" ng-if="!publicRecipeList || publicRecipeList.length==0" style="text-align: center">No data now</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<!--创建私有配方弹窗-->
+<script type="text/ng-template" id="addRecipe.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Recipe</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:publicRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <label>Recipe Name: </label>
+        <input class="form-control" ng-model="newRecipeName">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--配方详情弹窗-->
+<script type="text/ng-template" id="recipeDetail.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Recipe Detail</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:recipeDetailProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="panel panel-default"  style="margin:10px;">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="pull-left" style="line-height:25px; margin-left:8px;margin-right:8px;">
+                        <span>Recipe Name: {{recipeDetailName}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div data-spy="scroll" data-offset="0" style="height: 400px;overflow: auto;position: relative">
+                    <table class="table">
+                        <tr>
+                            <th>Period</th>
+                            <th>Execution_time(h)</th>
+                            <th>Carbon_Dioxide(ppm)</th>
+                            <th style="min-width: 130px">PPFD(μmol㎡/s)</th>
+                            <th>Liquid_DOC(mg/l)</th>
+                            <th>Liquid_Conductivity(mS/cm)</th>
+                            <th>Air_Humidity(%)</th>
+                            <th>Substrate_DOC(mg/l)</th>
+                            <th style="min-width: 100px">Lai</th>
+                            <th>Substrate_PH(PH)</th>
+                            <th>Substrate_Conductivity(mS/cm)</th>
+                            <th>Substrate_Temperature(°C)</th>
+                            <th>Air_Temperature(°C)</th>
+                            <th>Liquid_PH(PH)</th>
+                            <th>Lubstrate_Humidity(%)</th>
+                            <th style="min-width: 130px">Illuminance(lux)</th>
+                        </tr>
+                        <tbody ng-repeat = 'recipeInfos in recipeInfoList'>
+                        <tr>
+                            <td style="vertical-align: middle" rowspan="{{recipeInfos.data.length+1}}">Day{{recipeInfos.day}}</td>
+                        <tr ng-repeat="data in recipeInfos.data">
+                            <td>{{data.start_time}}-{{data.end_time}}</td>
+                            <td>{{data.carbon_Dioxide_start}} ~ {{data.carbon_Dioxide_end}}</td>
+                            <td>{{data.ppfd_start}} ~ {{data.ppfd_end}}</td>
+                            <td>{{data.liquid_DOC_start}} ~ {{data.liquid_DOC_end}}</td>
+                            <td>{{data.liquid_Conductivity_start}} ~ {{data.liquid_Conductivity_end}}</td>
+                            <td>{{data.air_Humidity_start}} ~ {{data.air_Humidity_end}}</td>
+                            <td>{{data.substrate_DOC_start}} ~ {{data.substrate_DOC_end}}</td>
+                            <td>{{data.lai_start}} ~ {{data.lai_end}}</td>
+                            <td>{{data.substrate_PH_start}} ~ {{data.substrate_PH_end}}</td>
+                            <td>{{data.substrate_Conductivity_start}} ~ {{data.substrate_Conductivity_end}}</td>
+                            <td>{{data.substrate_Temperature_start}} ~ {{data.substrate_Temperature_end}}</td>
+                            <td>{{data.air_Temperature_start}} ~ {{data.air_Temperature_end}}</td>
+                            <td>{{data.liquid_PH_start}} ~ {{data.liquid_PH_end}}</td>
+                            <td>{{data.substrate_Humidity_start}} ~ {{data.substrate_Humidity_end}}</td>
+                            <td>{{data.illuminance_start}} ~ {{data.illuminance_end}}</td>
+                        </tr>
+                        </tr>
+                        </tbody>
+                        <tr>
+                            <td colspan="16" ng-if="!recipeInfoList || recipeInfoList.length == 0" style="text-align: center">No data now</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+    </div>
+</script>
+
+<!--删除配方天数弹窗-->
+<script type="text/ng-template" id="deleteDaysFromRecipe.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Delete Days From Recipe</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:deleteRecipeDayProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="panel panel-default"  style="margin:10px;">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="pull-left" style="line-height:25px; margin-left:8px;margin-right:8px;">
+                        <span>Recipe Name: {{recipeDetailName}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>From: </label>
+                        <select class="form-control" ng-model="my.fromDay" ng-options="fromDay.day for fromDay in fromRecipeDays">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>To: </label>
+                        <select class="form-control" ng-model="my.toDay" ng-options="toDay.day for toDay in toRecipeDays">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--增加配方天数弹窗-->
+<script type="text/ng-template" id="addDaysToRecipe.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add Days To Recipe</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:addDaysAndDataProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="panel panel-default"  style="margin:10px;">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="pull-left" style="line-height:25px; margin-left:8px;margin-right:8px;">
+                        <span>Recipe Name: {{recipeDetailName}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12" ng-show="addDaysFromDay">
+                    <div class="form-group col-md-5">
+                        <label>From: </label>
+                        <select class="form-control" ng-model="my.fromDay" ng-options="fromDay.day for fromDay in fromRecipeDays">
+                        </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label>Add: </label>
+                        <input class="form-control" placeholder="Please input the days that you want to add" ng-model="inputDays">
+                    </div>
+                    <div class="col-md-2" style="margin-top: 25px">
+                        <button class="btn btn-success btn-sm" ng-click="addDays()">Next</button>
+                    </div>
+                </div>
+                <div class="col-md-12" ng-show="inputAddDaysData">
+                    <!--返回-->
+                    <div class="col-md-12">
+                        <a style="cursor:pointer;" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>back</a>
+                    </div>
+                    <!--显示用户当前已经选择的添加天数信息-->
+                    <div class="col-md-12">
+                        <label style="float: right">You select add {{inputDays}} days from day{{my.fromDay.day}}, then select the execution time and input the data.</label>
+                    </div>
+                    <!--选择时间段-->
+                    <div class="col-md-12">
+                        <div class="form-group col-md-2">
+                            <label>Start_time(h): </label>
+                            <select class="form-control" ng-model="my.start_time" ng-options="start_time.time for start_time in startTime">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label>End_time(h): </label>
+                            <select class="form-control" ng-model="my.end_time" ng-options="end_time.time for end_time in endTime">
+                            </select>
+                        </div>
+                    </div>
+                    <!--填写数据-->
+                    <div class="col-md-12" style="margin-left: 40px">
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Aubstrate_PH: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_PH_start" placeholder="PH">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_PH_end" placeholder="PH">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Substrate_Conductivity: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_Conductivity_start" placeholder="mS/cm">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_Conductivity_end" placeholder="mS/cm">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Substrate_Temperature: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_Temperature_start" placeholder="°C">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_Temperature_end" placeholder="°C">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>PPFD: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="ppfd_start" placeholder="μmol㎡/s">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="ppfd_end" placeholder="μmol㎡/s">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Liquid_PH: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="liquid_PH_start" placeholder="PH">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="liquid_PH_end" placeholder="PH">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Substrate_Humidity: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_Humidity_start" placeholder="%">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_Humidity_end" placeholder="%">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Liquid_DOC: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="liquid_DOC_start" placeholder="mg/l">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="liquid_DOC_end" placeholder="mg/l">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Liquid_Conductivity: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="liquid_Conductivity_start" placeholder="mS/cm">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="liquid_Conductivity_end" placeholder="mS/cm">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Substrate_DOC: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_DOC_start" placeholder="mg/l">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="substrate_DOC_end" placeholder="mg/l">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Lai: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="lai_start" placeholder="">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="lai_end" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Carbon_Dioxide: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="carbon_Dioxide_start" placeholder="ppm">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="carbon_Dioxide_end" placeholder="ppm">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Illuminance: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="illuminance_start" placeholder="lux">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="illuminance_end" placeholder="lux">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Air_Temperature: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="air_Temperature_start" placeholder="°C">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="air_Temperature_end" placeholder="°C">
+                            </div>
+                        </div>
+                        <div class="col-md-6 row">
+                            <div class="col-md-12">
+                                <label>Air_Humidity: </label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="air_Humidity_start" placeholder="%">
+                            </div>
+                            <div class="col-md-1">
+                                <p style="font-size: 15px;margin-top: 5px">~</p>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="air_Humidity_end" placeholder="%">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 pull-right">
+                            <button class="btn btn-success btn-sm pull-right" style="margin-top: 25px;" ng-click="addDataOk()">Sure</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12" data-spy="scroll" data-offset="0" style="height: 200px;overflow: auto;position: relative;margin-top: 20px">
+                        <label>Following is the data list that you have set: </label>
+                        <table class="table">
+                            <tr>
+                                <th>Execution_time(h)</th>
+                                <th>Substrate_PH(PH)</th>
+                                <th>Substrate_Conductivity(mS/cm)</th>
+                                <th>Substrate_Temperature(°C)</th>
+                                <th style="min-width: 130px">PPFD(μmol㎡/s)</th>
+                                <th>Liquid_PH(PH)</th>
+                                <th>Substrate_Humidity(%)</th>
+                                <th>Liquid_DOC(mg/l)</th>
+                                <th>Liquid_Conductivity(mS/cm)</th>
+                                <th>Substrate_DOC(mg/l)</th>
+                                <th style="min-width: 100px">Lai</th>
+                                <th>Carbon_Dioxide(ppm)</th>
+                                <th style="min-width: 130px">Illuminance(lux)</th>
+                                <th>Air_Temperature</th>
+                                <th>Air_Humidity(%)</th>
+                            </tr>
+                            <tr ng-repeat="addDaysDatas in addDaysDataList">
+                                <td>{{addDaysDatas.start_time}}-{{addDaysDatas.end_time}}</td>
+                                <td>{{addDaysDatas.substrate_PH_start}} ~ {{addDaysDatas.substrate_PH_end}}</td>
+                                <td>{{addDaysDatas.substrate_Conductivity_start}} ~ {{addDaysDatas.substrate_Conductivity_end}}</td>
+                                <td>{{addDaysDatas.substrate_Temperature_start}} ~ {{addDaysDatas.substrate_Temperature_end}}</td>
+                                <td>{{addDaysDatas.ppfd_start}} ~ {{addDaysDatas.ppfd_end}}</td>
+                                <td>{{addDaysDatas.liquid_PH_start}} ~ {{addDaysDatas.liquid_PH_end}}</td>
+                                <td>{{addDaysDatas.substrate_Humidity_start}} ~ {{addDaysDatas.substrate_Humidity_end}}</td>
+                                <td>{{addDaysDatas.liquid_DOC_start}} ~ {{addDaysDatas.liquid_DOC_end}}</td>
+                                <td>{{addDaysDatas.liquid_Conductivity_start}} ~ {{addDaysDatas.liquid_Conductivity_end}}</td>
+                                <td>{{addDaysDatas.substrate_DOC_start}} ~ {{addDaysDatas.substrate_DOC_end}}</td>
+                                <td>{{addDaysDatas.lai_start}} ~ {{addDaysDatas.lai_end}}</td>
+                                <td>{{addDaysDatas.carbon_Dioxide_start}} ~ {{addDaysDatas.carbon_Dioxide_end}}</td>
+                                <td>{{addDaysDatas.illuminance_start}} ~ {{addDaysDatas.illuminance_end}}</td>
+                                <td>{{addDaysDatas.air_Temperature_start}} ~ {{addDaysDatas.air_Temperature_end}}</td>
+                                <td>{{addDaysDatas.air_Humidity_start}} ~ {{addDaysDatas.air_Humidity_end}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="15" ng-if="!addDaysDataList || addDaysDataList.length == 0" style="text-align: center">You don't set any data</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--修改配方数据弹窗-->
+<script type="text/ng-template" id="editRecipeData.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Edit Recipe Data</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:editRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="panel panel-default"  style="margin:10px;">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="pull-left" style="line-height:25px; margin-left:8px;margin-right:8px;">
+                        <span>Recipe Name: {{recipeDetailName}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="col-md-12" ng-show="editRecipeDays">
+                        <div class="form-group col-md-5">
+                            <label>From: </label>
+                            <select class="form-control" ng-model="my.fromDay" ng-options="fromDay.day for fromDay in fromRecipeDays">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label>To: </label>
+                            <select class="form-control" ng-model="my.toDay" ng-options="toDay.day for toDay in toRecipeDays">
+                            </select>
+                        </div>
+                        <div class="col-md-2"b style="margin-top: 25px">
+                            <button class="btn btn-success btn-sm" ng-click="selectDay()">Next</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12" ng-show="inputEditRecipeData">
+                        <!--返回-->
+                        <div class="col-md-12">
+                            <a style="cursor:pointer;" ng-click="back()"><span class="glyphicon glyphicon-chevron-left"></span>back</a>
+                        </div>
+                        <!--显示用户当前已经选择的添加天数信息-->
+                        <div class="col-md-12">
+                            <label style="float: right">You select to edit the data from Day{{my.fromDay.day}} to Day{{my.toDay.day}}, then select the execution time and input the data.</label>
+                        </div>
+                        <!--选择时间段-->
+                        <div class="col-md-12">
+                            <div class="form-group col-md-2">
+                                <label>Start_time(h): </label>
+                                <select class="form-control" ng-model="my.start_time" ng-options="start_time.time for start_time in startTime">
+                                </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>End_time(h): </label>
+                                <select class="form-control" ng-model="my.end_time" ng-options="end_time.time for end_time in endTime">
+                                </select>
+                            </div>
+                        </div>
+                        <!--填写数据-->
+                        <div class="col-md-12" style="margin-left: 40px">
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Aubstrate_PH: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_PH_start" placeholder="PH">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_PH_end" placeholder="PH">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Substrate_Conductivity: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_Conductivity_start" placeholder="mS/cm">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_Conductivity_end" placeholder="mS/cm">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Substrate_Temperature: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_Temperature_start" placeholder="°C">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_Temperature_end" placeholder="°C">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>PPFD: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="ppfd_start" placeholder="μmol㎡/s">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="ppfd_end" placeholder="μmol㎡/s">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Liquid_PH: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="liquid_PH_start" placeholder="PH">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="liquid_PH_end" placeholder="PH">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Substrate_Humidity: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_Humidity_start" placeholder="%">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_Humidity_end" placeholder="%">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Liquid_DOC: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="liquid_DOC_start" placeholder="mg/l">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="liquid_DOC_end" placeholder="mg/l">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Liquid_Conductivity: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="liquid_Conductivity_start" placeholder="mS/cm">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="liquid_Conductivity_end" placeholder="mS/cm">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Substrate_DOC: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_DOC_start" placeholder="mg/l">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="substrate_DOC_end" placeholder="mg/l">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Lai: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="lai_start" placeholder="">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="lai_end" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Carbon_Dioxide: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="carbon_Dioxide_start" placeholder="ppm">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="carbon_Dioxide_end" placeholder="ppm">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Illuminance: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="illuminance_start" placeholder="lux">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="illuminance_end" placeholder="lux">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Air_Temperature: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="air_Temperature_start" placeholder="°C">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="air_Temperature_end" placeholder="°C">
+                                </div>
+                            </div>
+                            <div class="col-md-6 row">
+                                <div class="col-md-12">
+                                    <label>Air_Humidity: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="air_Humidity_start" placeholder="%">
+                                </div>
+                                <div class="col-md-1">
+                                    <p style="font-size: 15px;margin-top: 5px">~</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" ng-model="air_Humidity_end" placeholder="%">
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 pull-right">
+                                <button class="btn btn-success btn-sm pull-right" style="margin-top: 25px;" ng-click="addDataOk()">Sure</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12" data-spy="scroll" data-offset="0" style="height: 200px;overflow: auto;position: relative;margin-top: 20px">
+                            <label>Following is the data list that you have set: </label>
+                            <table class="table">
+                                <tr>
+                                    <th>Execution_time(h)</th>
+                                    <th>Substrate_PH(PH)</th>
+                                    <th>Substrate_Conductivity(mS/cm)</th>
+                                    <th>Substrate_Temperature(°C)</th>
+                                    <th style="min-width: 130px">PPFD(μmol㎡/s)</th>
+                                    <th>Liquid_PH(PH)</th>
+                                    <th>Substrate_Humidity(%)</th>
+                                    <th>Liquid_DOC(mg/l)</th>
+                                    <th>Liquid_Conductivity(mS/cm)</th>
+                                    <th>Substrate_DOC(mg/l)</th>
+                                    <th style="min-width: 100px">Lai</th>
+                                    <th>Carbon_Dioxide(ppm)</th>
+                                    <th style="min-width: 130px">Illuminance(lux)</th>
+                                    <th>Air_Temperature</th>
+                                    <th>Air_Humidity(%)</th>
+                                </tr>
+                                <tr ng-repeat="addDaysDatas in addDaysDataList">
+                                    <td>{{addDaysDatas.start_time}}-{{addDaysDatas.end_time}}</td>
+                                    <td>{{addDaysDatas.substrate_PH_start}} ~ {{addDaysDatas.substrate_PH_end}}</td>
+                                    <td>{{addDaysDatas.substrate_Conductivity_start}} ~ {{addDaysDatas.substrate_Conductivity_end}}</td>
+                                    <td>{{addDaysDatas.substrate_Temperature_start}} ~ {{addDaysDatas.substrate_Temperature_end}}</td>
+                                    <td>{{addDaysDatas.ppfd_start}} ~ {{addDaysDatas.ppfd_end}}</td>
+                                    <td>{{addDaysDatas.liquid_PH_start}} ~ {{addDaysDatas.liquid_PH_end}}</td>
+                                    <td>{{addDaysDatas.substrate_Humidity_start}} ~ {{addDaysDatas.substrate_Humidity_end}}</td>
+                                    <td>{{addDaysDatas.liquid_DOC_start}} ~ {{addDaysDatas.liquid_DOC_end}}</td>
+                                    <td>{{addDaysDatas.liquid_Conductivity_start}} ~ {{addDaysDatas.liquid_Conductivity_end}}</td>
+                                    <td>{{addDaysDatas.substrate_DOC_start}} ~ {{addDaysDatas.substrate_DOC_end}}</td>
+                                    <td>{{addDaysDatas.lai_start}} ~ {{addDaysDatas.lai_end}}</td>
+                                    <td>{{addDaysDatas.carbon_Dioxide_start}} ~ {{addDaysDatas.carbon_Dioxide_end}}</td>
+                                    <td>{{addDaysDatas.illuminance_start}} ~ {{addDaysDatas.illuminance_end}}</td>
+                                    <td>{{addDaysDatas.air_Temperature_start}} ~ {{addDaysDatas.air_Temperature_end}}</td>
+                                    <td>{{addDaysDatas.air_Humidity_start}} ~ {{addDaysDatas.air_Humidity_end}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="15" ng-if="!addDaysDataList || addDaysDataList.length == 0" style="text-align: center">You don't set any data</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--删除私有配方-->
+<script type="text/ng-template" id="deletePrivateRecipe.html">
+    <div class="modal-header" cg-busy="{promise:deleteRecipeProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <h3 class="modal-title">Are you sure to delete this {{recipeDetailName}} ?</h3>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--修改配方名称弹窗-->
+<script type="text/ng-template" id="renameRecipe.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Rename Recipe</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:recipeDetailProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+        <div class="row">
+            <div class="col-md-2" style="margin-top: 5px;margin-left: 20px">
+                <span>Recipe Name: </span>
+            </div>
+            <div class="col-md-8">
+                <span><input type="text" class="form-control" ng-model="recipeDetailName" style="text-align: center"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!--光配比配置弹窗-->
+<script type="text/ng-template" id="lightRate.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Recipe Light Rate</h3>
+    </div>
+    <div class="modal-body" cg-busy="{promise:findPublicRecipeDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+
+        <div class="col-md-12">
+            <div class="col-md-8" style="float: right;text-align: right" ng-if="publicRecipeDeviceList && publicRecipeDeviceList.length != 0">
+                <div class="col-md-12" ng-repeat="publicRecipeDevice in publicRecipeDeviceList">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        <label>{{publicRecipeDevice.public_recipe_device_description}}:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>{{publicRecipeDevice.public_recipe_device_content}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8" style="float: right;text-align: right" ng-if="!publicRecipeDeviceList || publicRecipeDeviceList.length == 0">
+                <div class="col-md-12">
+                    <label style="color: #aa0000">This recipe is built by yourself, there is no suggestion of this recipe.</label>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="text-align: center" ng-show="nextBtnShow">
+            <!--<div class="col-md-6"></div>-->
+            <div class="col-md-2" style="margin-top: 5px;">
+                <label for="exampleInputEmail1" style="vertical-align: middle">Total of channel: </label>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" ng-model="my.total" ng-options="total.num for total in totals">
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-success btn-xs" style="margin-top: 5px" ng-click="next()">Next</button>
+            </div>
+            <div class="col-md-8"></div>
+        </div>
+        <!--四个通道的时候-->
+        <div class="row" ng-show="channelFour" cg-busy="{promise:modifyRecipeDeviceProm,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+            <div class="col-md-12" style="text-align: left">
+                <a style="cursor: pointer" ng-click="back()">
+                    <span class="glyphicon glyphicon-chevron-left"></span> back
+                </a>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-8"></div>
+                <div class="col-md-4" style="float: right">
+                    <p style="font-weight: bold;">The total of the channel that you select is {{channelTotal}}.</p>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-2" style="margin-top: 5px;text-align: center">
+                    <label>Channel 1: </label>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>name: </label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" ng-model="my.fourChannel1" ng-options="fourChannel1.channel for fourChannel1 in channelItems1">
+                    </select>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>rate: </label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" placeholder="rate" ng-model="fourChannelRate1">
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-top: 10px">
+                <div class="col-md-2" style="margin-top: 5px;text-align: center">
+                    <label>Channel 2: </label>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>name: </label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" ng-model="my.fourChannel2" ng-options="fourChannel2.channel for fourChannel2 in channelItems2">
+                    </select>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>rate: </label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" placeholder="rate" ng-model="fourChannelRate2">
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-top: 10px">
+                <div class="col-md-2" style="margin-top: 5px;text-align: center">
+                    <label>Channel 3: </label>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>name: </label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" ng-model="my.fourChannel3" ng-options="fourChannel3.channel for fourChannel3 in channelItems3">
+                    </select>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>rate: </label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" placeholder="rate" ng-model="fourChannelRate3">
+                </div>
+            </div>
+            <div class="col-md-12" style="margin-top: 10px">
+                <div class="col-md-2" style="margin-top: 5px;text-align: center">
+                    <label>Channel 4: </label>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>name: </label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" ng-model="my.fourChannel4" ng-options="fourChannel4.channel for fourChannel4 in channelItems4">
+                    </select>
+                </div>
+                <div class="col-md-1" style="margin-top: 5px">
+                    <label>rate: </label>
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" placeholder="rate" ng-model="fourChannelRate4">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
