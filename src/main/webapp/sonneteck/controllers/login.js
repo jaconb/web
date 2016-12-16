@@ -22,7 +22,7 @@ angular.module('sntApp').controller('LoginCtrl', function($scope, $rootScope, $c
             if(data.code == "0"){
                 var user = data.content;
                 if(user.user_authorization == '1'){
-                    $cookieStore.put('token',user.token)
+                    $cookieStore.put('token',user.token);
                     $cookieStore.put('user_id', user.father_user);
                     $cookieStore.put('user_authorization',user.user_authorization);
                     $cookieStore.put('user_name',user.user_name);
@@ -30,7 +30,7 @@ angular.module('sntApp').controller('LoginCtrl', function($scope, $rootScope, $c
                     var storage = window.sessionStorage;
                     storage["user_pwd"] = $scope.credentials.password
                 }else {
-                    $cookieStore.put('token',user.token)
+                    $cookieStore.put('token',user.token);
                     $cookieStore.put('user_id', user.user_id);
                     $cookieStore.put('user_authorization',user.user_authorization);
                     $cookieStore.put('user_name',user.user_name);
